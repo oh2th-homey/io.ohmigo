@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "io.ohmigo",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -82,6 +82,10 @@
           "en": "Temperature changed",
           "sv": "Temperatur ändrad"
         },
+        "titleFormatted": {
+          "en": "Temperature changed",
+          "sv": "Temperatur ändrad"
+        },
         "hint": {
           "en": "Temperature changed.",
           "sv": "Temperatur ändrad."
@@ -111,6 +115,14 @@
         "title": {
           "en": "The target temperature changed",
           "sv": "Måltemperaturen ändrades"
+        },
+        "titleFormatted": {
+          "en": "The target temperature changed",
+          "sv": "Måltemperaturen ändrades"
+        },
+        "hint": {
+          "en": "The target temperature changed.",
+          "sv": "Måltemperaturen ändrades."
         },
         "tokens": [
           {
@@ -171,6 +183,10 @@
         "titleFormatted": {
           "en": "Set the temperature to [[target_temperature]]°C",
           "sv": "Ställ in temperatur till [[target_temperature]]°C"
+        },
+        "hint": {
+          "en": "Set the target temperature.",
+          "sv": "Ställ in måltemperaturen."
         },
         "args": [
           {

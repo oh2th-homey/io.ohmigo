@@ -287,7 +287,11 @@ module.exports = class mainDevice extends Device {
 
       if (delay) await sleep(delay);
 
-      await this.setCapabilityValue(key, value);
+      try {
+        await this.setCapabilityValue(key, value);
+      } catch (error) {
+        this.log(`${this.getName()} - setValue - error: ${error}`);
+      }
 
       //
       // Capability triggers

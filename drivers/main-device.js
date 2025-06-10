@@ -23,12 +23,18 @@ module.exports = class mainDevice extends Device {
     this.uptimeUpdate = true; // Update uptime only every second interval
 
     checkCapabilities(this);
-    await this.setCapabilityOptions('target_temperature', { min: settings.min_temp, max: settings.max_temp });
-    await this.setCapabilityListeners();
-    await this.setCapabilityValues(true);
-    await this.setFlowListeners();
-    await sleep(this.interval);
-    setCapabilityValuesInterval(this, this.interval);
+
+    try {
+      await this.setCapabilityOptions('target_temperature', { min: settings.min_temp, max: settings.max_temp });
+      await this.setCapabilityListeners();
+      await this.setCapabilityValues(true);
+      await this.setFlowListeners();
+      await sleep(this.interval);
+      setCapabilityValuesInterval(this, this.interval);
+    } catch (error) {
+      this.log(`${this.getName()} - onInit error: ${error}`);
+      this.setUnavailable(`Init error - ${error}`).catch(() => {});
+    }
 
     this.log(`${this.getName()} - onInit done`);
   }
@@ -66,8 +72,12 @@ module.exports = class mainDevice extends Device {
       this.api.host = newSettings.address;
     }
     if (changedKeys.includes('interval')) {
-      await clearIntervals(this);
-      setCapabilityValuesInterval(this, newSettings.interval * 1000);
+      try {
+        await clearIntervals(this);
+        setCapabilityValuesInterval(this, newSettings.interval * 1000);
+      } catch (error) {
+        this.log(`${this.getName()} - onSettings - error clearing intervals => `, error);
+      }
     }
     if (changedKeys.includes('type') && newSettings.type !== '99') {
       this.log(`${this.getName()} - onSettings - type: ${newSettings.type}`);
@@ -130,7 +140,11 @@ module.exports = class mainDevice extends Device {
   async onDiscoveryAvailable(discoveryResult) {
     this.log(`${this.getName()} - available - result: ${discoveryResult.address}.`);
     this.log(`${this.getName()} - type: ${discoveryResult.txt.devicetype}.`);
-    await this.setAvailable();
+    try {
+      await this.setAvailable();
+    } catch (error) {
+      this.log(`${this.getName()} - onDiscoveryAvailable - error: ${error}`);
+    }
   }
 
   /**
@@ -279,7 +293,13 @@ module.exports = class mainDevice extends Device {
    */
   async setValue(key, value, firstRun = false, delay = 10) {
     if (this.hasCapability(key)) {
-      const oldVal = await this.getCapabilityValue(key);
+      let oldVal;
+      try {
+        oldVal = await this.getCapabilityValue(key);
+      } catch (error) {
+        this.log(`${this.getName()} - setValue - error getting old value: ${error}`);
+        oldVal = undefined;
+      }
 
       if (oldVal !== value) {
         this.log(`${this.getName()} - oldValue=${oldVal}, newValue=${value} => ${key}`);

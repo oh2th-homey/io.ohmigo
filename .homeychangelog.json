@@ -43,5 +43,8 @@
   },
   "1.3.8": {
     "en": "FIX: Catch setCapacityValue errors."
+  },
+  "1.3.9": {
+    "en": "Add error handling for oncaught promises."
   }
 }
